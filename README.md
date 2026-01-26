@@ -1,17 +1,11 @@
-# OpenOnDemand Admin User Impersonation Dashboard
-## Author
+# OpenOnDemand Admin Apps
+A collection of administrative tools for OpenOnDemand (OOD) at Idaho National Laboratory.
 
-Brandon Biggs - Idaho National Laboratory
+## Authors
+Brandon Biggs (Brandon.Biggs@inl.gov) - Idaho National Laboratory
 
-An administrative tool for OpenOnDemand (OOD) that enables authorized administrators to impersonate other users on HPC clusters. Developed at Idaho National Laboratory.
+Please reach out if you run into any issues.
 
-## Overview
-
-This project provides a web-based admin page accessible directly from the OOD interface that allows HPC cluster administrators to:
-
-- Impersonate any user account in the OpenOnDemand environment
-- Record audit logs of all impersonation attempts with required justification
-- Dynamically update authentication mappings for the impersonated user
 
 ## Directory Structure
 
@@ -31,9 +25,22 @@ public_ondemand_admin/
 └── README.md
 ```
 
-## Components
+---
 
-### Authentication Mapping Script (`bin/ood_auth_map.regex`)
+## Applications
+
+### User Impersonation Dashboard
+![An example of what the form looks like for user impersonation](images/ood_impersonation.png)
+
+A web-based admin page accessible directly from the OOD interface that allows HPC cluster administrators to:
+
+- Impersonate any user account in the OpenOnDemand environment
+- Record audit logs of all impersonation attempts with required justification
+- Dynamically update authentication mappings for the impersonated user
+
+#### Components
+
+##### Authentication Mapping Script (`bin/ood_auth_map.regex`)
 
 A Bash script that handles the core authentication mapping mechanism:
 
@@ -44,7 +51,7 @@ A Bash script that handles the core authentication mapping mechanism:
 
 You will need to update this to work with your current authentication mapping.
 
-### Admin Dashboard (`user_impersonation_dashboard/`)
+##### Admin Dashboard (`user_impersonation_dashboard/`)
 
 A Ruby on Rails integration that adds admin routes to the OpenOnDemand dashboard:
 
@@ -52,7 +59,7 @@ A Ruby on Rails integration that adds admin routes to the OpenOnDemand dashboard
 - **Form Interface**: Provides fields for target username and impersonation reason
 - **Audit Logging**: Records all impersonation attempts with timestamps and justifications
 
-## Installation
+#### Installation
 
 1. Copy the `user_impersonation_dashboard` directory contents to your OOD dashboard configuration:
 
@@ -77,7 +84,7 @@ A Ruby on Rails integration that adds admin routes to the OpenOnDemand dashboard
 
 4. Ensure the `OOD_ADMIN_GROUP` environment variable is set in your OOD configuration to specify which group has admin access.
 
-## Configuration
+#### Configuration
 
 The `env` file contains the following environment variables:
 
@@ -86,7 +93,7 @@ The `env` file contains the following environment variables:
 | `OOD_DASHBOARD_ADMIN_AUTH_MAP_FILE` | Path to the authentication mapping script | `/opt/ood/ood_auth_map/bin/ood_auth_map.regex` |
 | `OOD_DASHBOARD_ADMIN_AUTH_LOG_FILE` | Path to the impersonation audit log | `/var/log/ood-impersonation.log` |
 
-## Usage
+#### Usage
 
 1. Log into the OpenOnDemand dashboard as an admin user (member of `OOD_ADMIN_GROUP`)
 2. Navigate to `/admin` in the dashboard
@@ -96,7 +103,7 @@ The `env` file contains the following environment variables:
 
 The system will update the authentication mapping and log the action. The next session created through the configured service account will run as the impersonated user.
 
-## Security
+#### Security
 
 - **Access Control**: Admin routes are only loaded for users in the designated admin group
 - **Audit Trail**: All impersonation attempts are logged with:
@@ -105,3 +112,4 @@ The system will update the authentication mapping and log the action. The next s
   - Target user being impersonated
   - Stated reason/justification
 - **Input Validation**: Both username and reason fields are required
+
