@@ -1,0 +1,28 @@
+# Copyright 2026, Battelle Energy Alliance, LLC, ALL RIGHTS RESERVED
+#!/bin/bash
+
+# Get the current user name via the ood method
+function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+CURRENT_USER=$(urldecode $1)
+
+# We needed a temporary variable
+SIGNING_IN_USER=${CURRENT_USER}
+
+# Set the user that will be impersonated
+hpcuser_IMPERSONATION="USER_WHO_WILL_BE_IMPERSONATED"
+
+authorized_users=("hpcuser")
+
+# Iterate over each variable name
+for user in "${authorized_users[@]}"
+do
+  IMPERSONATED_USER="${user}_IMPERSONATION"
+  SERVICE_ACCOUNT="ood-service-${user}"
+
+  # If the logging in user name ($CURRENT_USER) matches a service account, impersonate the specified user account
+  if [ "${CURRENT_USER}" == "${SERVICE_ACCOUNT}" ]; then
+      SIGNING_IN_USER="${!IMPERSONATED_USER}"
+  fi
+
+done
+echo ${SIGNING_IN_USER}
