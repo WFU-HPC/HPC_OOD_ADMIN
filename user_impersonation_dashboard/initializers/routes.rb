@@ -3,7 +3,7 @@
 ActiveSupport.on_load(:after_initialize) do
   # Admin Portal routes
   Rails.logger.info "Checking to add routes..."
-  if CurrentUser.group_names.include?('OOD_ADMIN_GROUP')
+  if CurrentUser.group_names.include?(ENV['OOD_ADMIN_GROUP'])
     Rails.logger.info "Admin group found. Adding admin routes."
     Rails.application.routes.append do
       get "/admin", to: "admin#index"
