@@ -181,3 +181,40 @@ The system will update the authentication mapping and log the action. The next s
   - Target user being impersonated
   - Stated reason/justification
 - **Input Validation**: Both username and reason fields are required
+
+##### SELinux
+
+You will most likely run into some problems with SELinux if you have it enabled. Here is an example policy that should cover the interactions between `ood_pun_t` and the new files. **Triple check these settings before applying!**
+
+```sh
+cat << EOF > /tmp/ood_admin_policy.te
+module ood_admin_policy 1.0;
+
+require {
+        type ood_pun_t;
+        type tmpfs_t;
+        type bin_t;
+        type var_log_t;
+        class file { open write };
+}
+
+#============= ood_pun_t ==============
+allow ood_pun_t bin_t:file write;
+allow ood_pun_t tmpfs_t:file write;
+allow ood_pun_t var_log_t:file open;
+EOF
+```
+
+Put the changes into place like this,
+
+```sh
+checkmodule -M -m -o /tmp/ood_admin_policy.mod /tmp/ood_admin_policy.te
+semodule_package -o /tmp/ood_admin_policy.pp -m /tmp/ood_admin_policy.mod
+semodule -i /tmp/ood_admin_policy.pp
+```
+
+and remove any cruft when you are done,
+
+```sh
+rm /tmp/ood_admin_policy.*
+```
